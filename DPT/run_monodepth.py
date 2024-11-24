@@ -17,7 +17,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../net'
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../utility')))
 
 from CycleGAN_generator import CycleGANGenerator, CycleGANDiscriminator
-from data import UnpairedDataset
+from data import UnpairedDatasetWithDepth
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
@@ -117,7 +117,7 @@ def run(
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
         ])
-        dataset = UnpairedDataset(input_path, output_path, transform)
+        dataset = UnpairedDatasetWithDepth(input_path, output_path, transform)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
         # Training loop
@@ -190,8 +190,8 @@ def run(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-i", "--input_path", default="input/rgb", help="folder with input images")
-    parser.add_argument("-o", "--output_path", default="output_monodepth", help="folder for output images")
+    parser.add_argument("-i", "--input_path", default="input/SUIM", help="folder with input images")
+    parser.add_argument("-o", "--output_path", default="output_monodepth/SUIM", help="folder for output images")
     parser.add_argument("-m", "--model_weights", default=None, help="path to model weights")
     parser.add_argument("-t", "--model_type", default="dpt_hybrid", help="model type [dpt_hybrid|midas_v21|dpt_large]")
     parser.add_argument("--cycle_gan", action="store_true", help="Enable CycleGAN training")
