@@ -8,9 +8,9 @@ from net.CycleGAN_generator import CycleGANGenerator
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Paths
-input_path = './data/EUVP/domianA' 
-output_path = './test/output'  # Enhanced output images
-model_path = './saved_models/generator_a2b.pth'  # Trained generator model
+input_path = './data/UDD' 
+output_path = './test/output/UDD'  # Enhanced output images
+model_path = './saved_models/UDD/generator_a2b.pth'  # Trained generator model
 
 # Ensure output directory exists
 os.makedirs(output_path, exist_ok=True)
