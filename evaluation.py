@@ -5,9 +5,9 @@ from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
 
 # Paths
-input_path = './data/EUVP/domianA'
+input_path = './datasets/trainA'  # Directory with original input images
 enhanced_path = './test/output'  # Directory with enhanced images
-metrics_file = './test/metrics.csv'  # CSV file to save the metrics
+metrics_file = './test/output/evaluation_metrics.csv'  # CSV file to save the metrics
 
 # Ensure directories exist
 if not os.path.exists(input_path):
@@ -56,12 +56,8 @@ with open(metrics_file, mode='w', newline='') as csvfile:
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2RGB)
             enhanced_img = cv2.cvtColor(enhanced_img, cv2.COLOR_BGR2RGB)
 
-            # Determine a suitable win_size for SSIM
-            min_dim = min(input_img.shape[0], input_img.shape[1])  # Smaller dimension of the input image
-            win_size = max(3, min(7, min_dim))  # Ensure win_size is at least 3 and no larger than the smallest dimension
-
             # Compute SSIM and PSNR
-            ssim_value = ssim(input_img, enhanced_img, multichannel=True, win_size=win_size, channel_axis=-1)
+            ssim_value = ssim(input_img, enhanced_img, channel_axis=-1)  # Automatic window size
             psnr_value = psnr(input_img, enhanced_img)
 
             # Write metrics to CSV
