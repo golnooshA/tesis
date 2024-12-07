@@ -47,7 +47,7 @@ os.makedirs(output_dir, exist_ok=True)
 # Dataset and DataLoader
 transform = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize((128, 128)),  # Resize images
+    transforms.Resize((256, 256)),  # Resize images
     transforms.ToTensor(),
 ])
 dataset = UnderwaterDataset(input_folder, depth_folder, target_folder, transform=transform)
@@ -55,7 +55,7 @@ dataset = UnderwaterDataset(input_folder, depth_folder, target_folder, transform
 if len(dataset) == 0:
     raise ValueError("No data found. Check your input, depth, and target folders.")
 
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True)  # Adjust batch size based on GPU memory
+dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Adjust batch size based on GPU memory
 
 # Initialize models
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -78,7 +78,7 @@ criterion_identity = torch.nn.L1Loss()  # Identity loss
 scaler = GradScaler()
 
 # Training loop
-num_epochs = 100
+num_epochs = 200
 for epoch in range(num_epochs):
     for i, (input_data, target_data) in enumerate(dataloader):
         input_data, target_data = input_data.to(device), target_data.to(device)
@@ -131,10 +131,11 @@ for epoch in range(num_epochs):
                   f"G Loss: {loss_G.item():.4f}, D Loss A: {loss_D_A.item():.4f}, D Loss B: {loss_D_B.item():.4f}")
 
     # Save model checkpoints every epoch
-    torch.save(G_AB.state_dict(), os.path.join(output_dir, f'G_AB_epoch_{epoch+1}.pth'))
-    torch.save(G_BA.state_dict(), os.path.join(output_dir, f'G_BA_epoch_{epoch+1}.pth'))
-    torch.save(D_A.state_dict(), os.path.join(output_dir, f'D_A_epoch_{epoch+1}.pth'))
-    torch.save(D_B.state_dict(), os.path.join(output_dir, f'D_B_epoch_{epoch+1}.pth'))
+    torch.save(G_AB.state_dict(), os.path.join(output_dir, 'latest_net_G_AB.pth'))
+    torch.save(G_BA.state_dict(), os.path.join(output_dir, 'latest_net_G_BA.pth'))
+    torch.save(D_A.state_dict(), os.path.join(output_dir, 'latest_net_D_A.pth'))
+    torch.save(D_B.state_dict(), os.path.join(output_dir, 'latest_net_D_B.pth'))
     print(f"Models saved for epoch {epoch+1}")
+
 
 print("Training completed!")
